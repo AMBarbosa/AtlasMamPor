@@ -3,7 +3,7 @@
 Shiny app files behind the interactive maps at https://atlas-mamiferos.uevora.pt/index.php/mapas/. If you have R and the 'shiny' package installed, you can run the app with:
 
 ```r
-**shiny::runGitHub("AtlasMamPor", "AMBarbosa")**
+shiny::runGitHub("AtlasMamPor", "AMBarbosa")
 ```
 
 
