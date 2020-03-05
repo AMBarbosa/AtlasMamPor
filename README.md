@@ -2,7 +2,9 @@
 
 Shiny app files behind the interactive maps at https://atlas-mamiferos.uevora.pt/index.php/mapas/. If you have R and the 'shiny' package installed, you can run the app with:
 
-shiny::runGitHub("AtlasMamPor", "AMBarbosa")
+```r
+**shiny::runGitHub("AtlasMamPor", "AMBarbosa")**
+```
 
 
 If you use mammal occurrence data from these files, remember to cite:
