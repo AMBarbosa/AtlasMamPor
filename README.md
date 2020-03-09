@@ -8,7 +8,7 @@ shiny::runGitHub("AtlasMamPor", "AMBarbosa")
 
 You can also **use the app online** at [shinyapps.io](https://ambiogeo.shinyapps.io/atlasmampor/). You will be able to interactively create maps like this one on wolf distribution in Portugal:
 
-![](imagens/example.jpg)
+![](imagens/example.JPG)
 
 \newline \newline
 If you use mammal occurrence data contained in these files, remember to **cite**:
