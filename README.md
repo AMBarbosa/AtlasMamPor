@@ -10,7 +10,6 @@ You can also **use the app online** at [shinyapps.io](https://ambiogeo.shinyapps
 
 ![](imagens/example.JPG)
 
-\newline \newline
 If you use mammal occurrence data contained in these files, remember to **cite**:
 
 **REFERENCES**
