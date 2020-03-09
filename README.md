@@ -6,9 +6,12 @@ Shiny app showing interactive maps of the Portuguese mammal atlas (Bencatel et a
 shiny::runGitHub("AtlasMamPor", "AMBarbosa")
 ```
 
-You can also **use the app online** at [shinyapps.io](https://ambiogeo.shinyapps.io/atlasmampor/).
+You can also **use the app online** at [shinyapps.io](https://ambiogeo.shinyapps.io/atlasmampor/). You will be able to interactively create maps like this one on wolf distribution in Portugal:
 
-If you use these mammal occurrence data, remember to **cite**:
+![](imagens/example.jpg)
+
+\newline \newline
+If you use mammal occurrence data contained in these files, remember to **cite**:
 
 **REFERENCES**
 
