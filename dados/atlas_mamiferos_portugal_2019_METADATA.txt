@@ -1,0 +1,47 @@
+= METADATA =
+
+FILE: atlas_mamiferos_portugal_2019.csv
+
+VERSION: 2.0
+
+DATE: March 2019
+
+SOURCE: Bencatel J., Sabino-Marques H., Álvares F., Moura A.E. & Barbosa A.M. (2019) Atlas de Mamíferos de Portugal, 2nd edition. Universidade de Évora, Évora. ISBN: 978-989-8550-80-4
+
+URL: atlas-mamiferos.uevora.pt
+
+These data are made available under a CC BY-SA 4.0 (Creative Commons) license: you are free to use them, as long as you cite the source (above) and share them or their transformations under the same terms. See https://creativecommons.org/licenses/by-sa/4.0/ for more details.
+
+We can not provide data on finer spatial or temporal resolutions.
+
+
+All UTM cells included in the table have at least one presence record of the corresponding species, which can either be recent/confirmed or not according to the criteria below.
+
+
+COLUMNS IN THE TABLE:
+
+-utm10-
+UTM code of the 10x10 km cell (or name of the island, for the Azores and Madeira archipelagos) where the species was recorded
+
+-centr_x-
+longitude (in decimal degrees) of the centroid of the cell or island
+
+-centr_y-
+latitude (in decimal degrees) of the centroid of the cell or island
+
+-especie- [species]
+scientific name of the recorded species
+
+-ordem-
+common name (in Portuguese) of the taxonomic order to which the species belongs
+
+-recente- [recent]
+1: yes - presence observed in or after the year 2000
+0: no - presence observed between 1990 and 1999
+NA: presence without a record of the year of observation
+
+-confirmado- [confirmed]
+1: yes - presence record confirmed according to the criteria outlined in chapter "Metodologia" of the source book (above)
+0: no - presence record not confirmed, but obtained by a naturalist (amateur or professional) and plausible given the species' ecology and known distribution area
+-1: really no - record obtained by general public survey, with credibility conditioned to the ease of correct identification of the species
+NA: presence record not recent (cf. previous column), so not classified here (see "Metodologia")
