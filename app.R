@@ -84,7 +84,7 @@ server <- function(input, output, session) {
 
       addLayersControl(overlayGroups = c("Sem data", "Antigos", "Recentes", "Fiabilidade"), baseGroups = c("OpenStreetMap", "OpenTopoMap"), options = layersControlOptions(collapsed = TRUE))
 
-    output$texto <- renderText(paste("SOURCE: Bencatel J., Sabino-Marques H., Alvares F., Moura A.E. & Barbosa A.M. (2019) Atlas de Mamiferos de Portugal (2nd edition). Universidade de Evora, Portugal. URL: http://atlas-mamiferos.uevora.pt/. Data available under a Creative Commons Attribution-ShareAlike license (CC BY-SA 4.0)."))
+    output$texto <- renderText(paste("SOURCE: Bencatel J., Sabino-Marques H., Alvares F., Moura A.E. & Barbosa A.M. (2019) Atlas de Mamiferos de Portugal (2nd edition). Universidade de Evora, Portugal.", "\n", "See http://atlas-mamiferos.uevora.pt/ for more information on the data.", "\n", "Available under a Creative Commons Attribution-ShareAlike license (CC BY-SA 4.0)."))
 
   })
 }
