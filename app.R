@@ -13,12 +13,13 @@ ui <- fluidPage(
     sidebarPanel(
       selectInput(inputId = "ordem", label = "Order", choices = c("ALL", as.character(sort(unique(mam_pt$ordem))))),
       selectInput(inputId = "especie", label = "Species", choices = "", selectize = FALSE),
-      textOutput(outputId = "texto")
+      textOutput(outputId = "fonte")
     ),
 
     mainPanel(
       leafletOutput(outputId = "mapa"),
-      textOutput(outputId = "texto2")
+      textOutput(outputId = "info"),
+      textOutput(outputId = "lic")
     )
   )
 )
@@ -86,9 +87,11 @@ server <- function(input, output, session) {
       addLayersControl(overlayGroups = c("Sem data", "Antigos", "Recentes", "Fiabilidade"), baseGroups = c("OpenStreetMap", "OpenTopoMap"), options = layersControlOptions(collapsed = TRUE))
   })
 
-  output$texto <- renderText({paste("SOURCE: Bencatel J., Sabino-Marques H., Alvares F., Moura A.E. & Barbosa A.M. (2019) Atlas de Mamiferos de Portugal (2nd edition). Universidade de Evora, Portugal.")})
+  output$fonte <- renderText({paste("SOURCE: Bencatel J., Sabino-Marques H., Alvares F., Moura A.E. & Barbosa A.M. (2019) Atlas de Mamiferos de Portugal (2nd edition). Universidade de Evora, Portugal.")})
 
-  output$texto2 <- renderText({paste("See http://atlas-mamiferos.uevora.pt/ for more information on the data.", "Available under a Creative Commons Attribution-ShareAlike license (CC BY-SA 4.0).", sep = "\n")})
+  output$info <- renderText({paste("See http://atlas-mamiferos.uevora.pt/ for more information on the data.")})
+
+  output$lic <- renderText({paste("Available under a Creative Commons Attribution-ShareAlike license (CC BY-SA 4.0).")})
 
 }
 
