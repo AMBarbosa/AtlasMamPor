@@ -10,7 +10,7 @@ You can also **use the app online** at [shinyapps.io](https://ambiogeo.shinyapps
 
 ![](imagens/example.JPG)
 
-If you use mammal occurrence data contained in these files, remember to **cite**:
+These materials are available under a Creative Commons Attribution-ShareAlike license (CC BY-SA 4.0). If you use mammal occurrence data contained in these files, remember to **cite**:
 
 **REFERENCES**
 
