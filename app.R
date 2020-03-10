@@ -16,10 +16,11 @@ ui <- fluidPage(
       textOutput(outputId = "texto")
     ),
 
-      mainPanel(
-        leafletOutput(outputId = "mapa")
-        )
+    mainPanel(
+      leafletOutput(outputId = "mapa"),
+      textOutput(outputId = "texto2")
     )
+  )
 )
 
 
@@ -34,7 +35,7 @@ server <- function(input, output, session) {
 
   observe({
     updateSelectInput(session, "especie", choices = seleccionar_especies()
-  )})
+    )})
 
   seleccionar_dados <- reactive({
     dados <- mam_pt[mam_pt$especie == input$especie, ]
@@ -83,10 +84,12 @@ server <- function(input, output, session) {
       addPolygons(color = cor_grelha, fillColor = NULL, fillOpacity = 0, weight = 1, label = ~utm10, labelOptions = labelOptions(noHide = FALSE, textOnly = TRUE, opacity = 0.8, textsize = "16px", style = list("color" = "darkgreen"))) %>%
 
       addLayersControl(overlayGroups = c("Sem data", "Antigos", "Recentes", "Fiabilidade"), baseGroups = c("OpenStreetMap", "OpenTopoMap"), options = layersControlOptions(collapsed = TRUE))
-
-    output$texto <- renderText(paste("SOURCE: Bencatel J., Sabino-Marques H., Alvares F., Moura A.E. & Barbosa A.M. (2019) Atlas de Mamiferos de Portugal (2nd edition). Universidade de Evora, Portugal.", "\n", "See http://atlas-mamiferos.uevora.pt/ for more information on the data.", "\n", "Available under a Creative Commons Attribution-ShareAlike license (CC BY-SA 4.0)."))
-
   })
+
+  output$texto <- renderText({paste("SOURCE: Bencatel J., Sabino-Marques H., Alvares F., Moura A.E. & Barbosa A.M. (2019) Atlas de Mamiferos de Portugal (2nd edition). Universidade de Evora, Portugal.")})
+
+  output$texto2 <- renderText({paste("See http://atlas-mamiferos.uevora.pt/ for more information on the data.", "Available under a Creative Commons Attribution-ShareAlike license (CC BY-SA 4.0).", sep = "\n")})
+
 }
 
 
