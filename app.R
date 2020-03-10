@@ -11,8 +11,8 @@ source('global.R')
 ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
-      selectInput(inputId = "ordem", label = "Ordem", choices = c("TODAS", as.character(sort(unique(mam_pt$ordem))))),
-      selectInput(inputId = "especie", label = "Especie", choices = "", selectize = FALSE),
+      selectInput(inputId = "ordem", label = "Order", choices = c("ALL", as.character(sort(unique(mam_pt$ordem))))),
+      selectInput(inputId = "especie", label = "Species", choices = "", selectize = FALSE),
       textOutput(outputId = "texto")
     ),
 
@@ -27,7 +27,7 @@ server <- function(input, output, session) {
 
   seleccionar_especies <- reactive({
     ord <- input$ordem
-    if (ord == "TODAS")  especies <- sort(unique(mam_pt$especie))
+    if (ord == "ALL")  especies <- sort(unique(mam_pt$especie))
     else  especies <- sort(unique(mam_pt[mam_pt$ordem == ord, "especie"]))
     especies
   })
@@ -51,12 +51,12 @@ server <- function(input, output, session) {
   cor_confirm <- "#FF6347"
 
   # https://stackoverflow.com/questions/37862467/leaflet-legend-for-custom-markers-in-r
-  atlas_legend <- "<img src='http://atlas-mamiferos.uevora.pt/wp-content/uploads/2019/03/legenda_semdata.png'>Sem data<br/>
-<img src='http://atlas-mamiferos.uevora.pt/wp-content/uploads/2019/03/legenda_antigo.png'>Antigo (1990-1999)<br/>
-  <img src='http://atlas-mamiferos.uevora.pt/wp-content/uploads/2019/03/legenda_recente.png'>Recente (2000-2018)<br/>
-  <img src='http://atlas-mamiferos.uevora.pt/wp-content/uploads/2019/03/legenda_confirmado.png'>  confirmado<br/>
-  <img src='http://atlas-mamiferos.uevora.pt/wp-content/uploads/2019/03/legenda_plausivel.png'>  credivel<br/>
-  <img src='http://atlas-mamiferos.uevora.pt/wp-content/uploads/2019/03/legenda_inquerito.png'>  inquerito<br/>"
+  atlas_legend <- "<img src='http://atlas-mamiferos.uevora.pt/wp-content/uploads/2019/03/legenda_semdata.png'>No date<br/>
+<img src='http://atlas-mamiferos.uevora.pt/wp-content/uploads/2019/03/legenda_antigo.png'>Old (1990-1999)<br/>
+  <img src='http://atlas-mamiferos.uevora.pt/wp-content/uploads/2019/03/legenda_recente.png'>Recent (2000-2018)<br/>
+  <img src='http://atlas-mamiferos.uevora.pt/wp-content/uploads/2019/03/legenda_confirmado.png'>  confirmed<br/>
+  <img src='http://atlas-mamiferos.uevora.pt/wp-content/uploads/2019/03/legenda_plausivel.png'>  credible<br/>
+  <img src='http://atlas-mamiferos.uevora.pt/wp-content/uploads/2019/03/legenda_inquerito.png'>  interview<br/>"
 
   output$mapa <- renderLeaflet({
     leaflet(data = ptgal) %>%
