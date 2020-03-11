@@ -44,8 +44,8 @@ server <- function(input, output, session) {
   })
 
   limites <- bbox(ptgal)
-  limites["x", "min"] <- limites["x", "min"] + 16
-  limites["y", "min"] <- limites["y", "min"] + 3
+  #limites["x", "min"] <- limites["x", "min"] + 16
+  #limites["y", "min"] <- limites["y", "min"] + 3
   cor_grelha <- "darkgrey"
   cor_semdata <- "grey"
   cor_antigo <- "orange"
