@@ -15,15 +15,18 @@ ui <- fluidPage(
   ),
 
   sidebarLayout(
+
     sidebarPanel(
-      #textOutput(outputId = "titulo"),
+      textOutput(outputId = "intro"),
+      textOutput(outputId = "linebreak"),
+
       selectInput(inputId = "ordem", label = "Order", choices = c("ALL", as.character(sort(unique(mam_pt$ordem))))),
       selectInput(inputId = "especie", label = "Species", choices = "", selectize = FALSE),
       textOutput(outputId = "fonte")
     ),
 
     mainPanel(
-      leafletOutput(outputId = "mapa", height = "95vh"),
+      leafletOutput(outputId = "mapa", height = "85vh"),
       textOutput(outputId = "info"),
       textOutput(outputId = "lic")
     )
@@ -32,6 +35,10 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
+
+  output$intro <- renderText("This atlas gathers mammal occurrence data made available (in publications, theses, reports, online photos) over the last three decades. Mind that survey effort was uneven: as in most atlases, the data reflect spatial and taxonomic bias, i.e., some species and areas were more intensively surveyed than others. This is just a picture of current and available knowledge.")
+
+  output$linebreak <- renderText(".")
 
   seleccionar_especies <- reactive({
     ord <- input$ordem
@@ -73,6 +80,7 @@ server <- function(input, output, session) {
   })
 
   observe({
+
     dados <- seleccionar_dados()
 
     leafletProxy("mapa", data = ptgal) %>%
