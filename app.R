@@ -17,17 +17,17 @@ ui <- fluidPage(
   sidebarLayout(
 
     sidebarPanel(
-      textOutput(outputId = "intro"),
-      textOutput(outputId = "linebreak"),
-
       selectInput(inputId = "ordem", label = "Order", choices = c("ALL", as.character(sort(unique(mam_pt$ordem))))),
       selectInput(inputId = "especie", label = "Species", choices = "", selectize = FALSE),
-      textOutput(outputId = "fonte")
+      hr(),
+      strong(textOutput(outputId = "source")),
+      hr(),
+      textOutput(outputId = "datainfo")
     ),
 
     mainPanel(
-      leafletOutput(outputId = "mapa", height = "85vh"),
-      textOutput(outputId = "info"),
+      leafletOutput(outputId = "mapa", height = "80vh"),
+      textOutput(outputId = "moreinfo"),
       textOutput(outputId = "lic")
     )
   )
@@ -36,9 +36,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  output$intro <- renderText("This atlas gathers mammal occurrence data made available (in publications, theses, reports, online photos) over the last three decades. Mind that survey effort was uneven: as in most atlases, the data reflect spatial and taxonomic bias, i.e., some species and areas were more intensively surveyed than others. This is just a picture of current and available knowledge.")
-
-  output$linebreak <- renderText(".")
+  output$linebreak <- renderText("________")
 
   seleccionar_especies <- reactive({
     ord <- input$ordem
@@ -99,9 +97,11 @@ server <- function(input, output, session) {
       addLayersControl(overlayGroups = c("No date", "Old", "Recent", "Reliability"), baseGroups = c("OpenStreetMap", "OpenTopoMap"), options = layersControlOptions(collapsed = TRUE))
   })
 
-  output$fonte <- renderText("SOURCE: Bencatel J., Sabino-Marques H., Alvares F., Moura A.E. & Barbosa A.M. (2019) Atlas de Mamiferos de Portugal (2nd edition). Universidade de Evora, Portugal.")
+  output$source <- renderText("SOURCE: Bencatel J., Sabino-Marques H., Alvares F., Moura A.E. & Barbosa A.M. (2019) Atlas de Mamiferos de Portugal (2nd edition). Universidade de Evora, Portugal")
 
-  output$info <- renderText("See http://atlas-mamiferos.uevora.pt/ for more information on the data.")
+  output$datainfo <- renderText("This atlas gathers mammal occurrence records made available (in publications, theses, reports, online photos or direct contributions) over the last three decades. Mind that survey effort was uneven: as in most atlases, the data reflect spatial and taxonomic bias, as some species and areas were more intensively surveyed than others. The atlas is a picture of the knowledge made available up to the time of publication of the atlas.")
+
+  output$moreinfo <- renderText("See http://atlas-mamiferos.uevora.pt/ for more information on the data.")
 
   output$lic <- renderText("Available under a Creative Commons Attribution-ShareAlike license (CC BY-SA 4.0).")
 
