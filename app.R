@@ -99,7 +99,7 @@ server <- function(input, output, session) {
 
   output$source <- renderText("SOURCE: Bencatel J., Sabino-Marques H., Alvares F., Moura A.E. & Barbosa A.M. (2019) Atlas de Mamiferos de Portugal (2nd edition). Universidade de Evora, Portugal")
 
-  output$datainfo <- renderText("This atlas gathers mammal occurrence records made available (in publications, theses, reports, online photos or direct contributions) over the last three decades. Mind that survey effort was uneven: as in most atlases, the data reflect spatial and taxonomic bias, as some species and areas were more intensively surveyed than others. The atlas is a picture of the knowledge made available up to the time of publication of the atlas.")
+  output$datainfo <- renderText("This atlas gathers mammal occurrence records made available (in publications, theses, reports, online photos or direct contributions) over the last three decades. Mind that survey effort was uneven: as in most atlases, the data reflect spatial and taxonomic bias, as some species and areas were more intensively surveyed than others. The atlas is a picture of the knowledge made available up to the time of publication.")
 
   output$moreinfo <- renderText("See http://atlas-mamiferos.uevora.pt/ for more information on the data.")
 
