@@ -1,6 +1,6 @@
 # Atlas of Mammals in Portugal
 
-Shiny app showing interactive maps of the Portuguese mammal atlas (Bencatel et al. 2019). If you have R installed with the 'shiny' package and the app's dependencies (currently 'rgdal', 'sp' and 'leaflet'), you can **run the app in your computer** by typing:
+Shiny app showing interactive maps of the Portuguese mammal atlas (Bencatel et al. 2019). If you have R installed with the 'shiny' package and the app's dependencies (currently 'terra', 'leaflet' and 'leaflet.extras'), you can **run the app in your computer** by typing:
 
 ```{r, eval=FALSE}
 shiny::runGitHub("AtlasMamPor", "AMBarbosa")
