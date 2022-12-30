@@ -1,2 +1,8 @@
-mam_pt <- read.csv("dados/atlas_mamiferos_portugal_2019.csv")
+atlas <- read.csv("dados/atlas_mamiferos_portugal_2019.csv")
+
 ptgal <- vect("mapas/utm10+ilhas.gpkg")
+
+datapaper <- read.csv("dados/datapaper_utm10.csv")
+
+atlas$source <- "atlas"
+datapaper$source <- "datapaper"
