@@ -140,7 +140,7 @@ server <- function(input, output, session) {
 
   output$moreinfo <- renderText("Note that the 'confirmed', 'credible' and 'interview' labels refer only to the Atlas records, in dark red. Note also that marine mammals are not in the interactive maps due to data privacy, but they have plenty of records in the Atlas. See the PDF book (available at https://atlasmamiferosportugal.wordpress.com) for more info on the data!")
 
-  output$lic <- renderText("Available under a Creative Commons Attribution-ShareAlike license (CC BY-SA 4.0).")
+  output$lic <- renderText("The data, maps and code behind this webpage are available at https://github.com/AMBarbosa/AtlasMamPor under a Creative Commons Attribution-ShareAlike license (CC BY-SA 4.0).")
 
 }
 
