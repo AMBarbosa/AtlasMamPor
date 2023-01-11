@@ -6,7 +6,7 @@ This repo contains the data and code behind the terrestrial interactive maps of 
 shiny::runGitHub("AtlasMamPor", "AMBarbosa")
 ```
 
-You can also **use the app online** at [shinyapps.io](https://ambiogeo.shinyapps.io/atlasmampor/). You'll be able to interactively create maps such as this one on wolf occurrence records in Portugal:
+You can also [**use the app online**](https://ambiogeo.shinyapps.io/atlasmampor/). You'll be able to interactively create maps such as this one on wolf occurrence records in Portugal:
 
 ![](imagens/example.JPG)
 
