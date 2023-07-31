@@ -1,6 +1,6 @@
 # by A. Marcia Barbosa (https://modtools.wordpress.com/barbosa/)
 # used for https://atlas-mamiferos.uevora.pt/index.php/mapas/
-# last updated 11 Jan 2023
+# last updated 31 Jul 2023
 
 # RStudio: Session -> Set Working Directory -> To Source File Location
 
@@ -109,16 +109,20 @@ server <- function(input, output, session) {
     leafletProxy("mapa", data = ptgal) |>
       clearShapes() |>
 
-      addPolygons(data = ptgal[ptgal$utm10 %in% dados[which(is.na(dados$recente) & dados$source == "atlas"), "utm10"], ], fillColor = cor_semdata, fillOpacity = 0.5, stroke = FALSE, group = "No date") |>
-      addPolygons(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$recente) & dados$recente == 0 & dados$source == "atlas", "utm10"], ], fillColor = cor_antigo, fillOpacity = 0.6, stroke = FALSE, group = "Old") |>
-      addPolygons(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$recente) & dados$recente == 1 & dados$source == "atlas", "utm10"], ], fillColor = cor_recente, fillOpacity = 0.6, stroke = FALSE, group = "Recent") |>
-      addPolygons(data = ptgal[ptgal$utm10 %in% dados[dados$source == "datapaper", "utm10"], ], fillColor = cor_datapaper, fillOpacity = 0.6, stroke = FALSE, group = "Grilo et al. (2022)") |>
+      # https://search.r-project.org/cran/refmans/leaflet/html/addMapPane.html
+      addMapPane("back", zIndex = 410) |>  # always below
+      addMapPane("front", zIndex = 440) |>  # always on top, for grid utm labels to show
 
-      addCircles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == 1, "utm10"], c("centr_x", "centr_y")], ~centr_x, ~centr_y, radius = 3000, stroke = FALSE, fill = TRUE, fillColor = cor_confirm, fillOpacity = 0.5, group = "Reliability") |>
-      addCircles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == 0, "utm10"], c("centr_x", "centr_y")], ~centr_x, ~centr_y, radius = 3000, stroke = TRUE, fill = FALSE, color = cor_confirm, weight = 2, opacity = 0.5, group = "Reliability") |>
-      addRectangles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == -1, "utm10"], c("centr_x", "centr_y")], lng1 = ~centr_x - 0.03, lat1 = ~centr_y - 0.008, lng2 = ~centr_x + 0.03, lat2 = ~centr_y + 0.008, stroke = FALSE, fill = TRUE, fillColor = cor_confirm, fillOpacity = 0.5, group = "Reliability") |>
+      addPolygons(data = ptgal[ptgal$utm10 %in% dados[which(is.na(dados$recente) & dados$source == "atlas"), "utm10"], ], fillColor = cor_semdata, fillOpacity = 0.5, stroke = FALSE, group = "No date", options = pathOptions(pane = "back")) |>
+      addPolygons(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$recente) & dados$recente == 0 & dados$source == "atlas", "utm10"], ], fillColor = cor_antigo, fillOpacity = 0.6, stroke = FALSE, group = "Old", options = pathOptions(pane = "back")) |>
+      addPolygons(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$recente) & dados$recente == 1 & dados$source == "atlas", "utm10"], ], fillColor = cor_recente, fillOpacity = 0.6, stroke = FALSE, group = "Recent", options = pathOptions(pane = "back")) |>
+      addPolygons(data = ptgal[ptgal$utm10 %in% dados[dados$source == "datapaper", "utm10"], ], fillColor = cor_datapaper, fillOpacity = 0.6, stroke = FALSE, group = "Grilo et al. (2022)", options = pathOptions(pane = "back")) |>
 
-      addPolygons(color = cor_grelha, fillColor = NULL, fillOpacity = 0, weight = 1, label = ~utm10, labelOptions = labelOptions(noHide = FALSE, textOnly = TRUE, opacity = 0.8, textsize = "16px", style = list("color" = "darkgreen"))) |>
+      addCircles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == 1, "utm10"], c("centr_x", "centr_y")], ~centr_x, ~centr_y, radius = 3000, stroke = FALSE, fill = TRUE, fillColor = cor_confirm, fillOpacity = 0.5, group = "Reliability", options = pathOptions(pane = "back")) |>
+      addCircles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == 0, "utm10"], c("centr_x", "centr_y")], ~centr_x, ~centr_y, radius = 3000, stroke = TRUE, fill = FALSE, color = cor_confirm, weight = 2, opacity = 0.5, group = "Reliability", options = pathOptions(pane = "back")) |>
+      addRectangles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == -1, "utm10"], c("centr_x", "centr_y")], lng1 = ~centr_x - 0.03, lat1 = ~centr_y - 0.008, lng2 = ~centr_x + 0.03, lat2 = ~centr_y + 0.008, stroke = FALSE, fill = TRUE, fillColor = cor_confirm, fillOpacity = 0.5, group = "Reliability", options = pathOptions(pane = "back")) |>
+
+      addPolygons(color = cor_grelha, fillColor = NULL, fillOpacity = 0, weight = 1, label = ~utm10, labelOptions = labelOptions(noHide = FALSE, textOnly = TRUE, opacity = 0.8, textsize = "16px", style = list("color" = "darkgreen")), options = pathOptions(pane = "front")) |>
 
       addLayersControl(overlayGroups = c("No date", "Old", "Recent", "Reliability", "Grilo et al. (2022)"), baseGroups = c("OpenStreetMap", "OpenTopoMap", "Stamen.Terrain"), options = layersControlOptions(collapsed = TRUE)) |>
 
