@@ -122,7 +122,7 @@ server <- function(input, output, session) {
       addCircles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == 0, "utm10"], c("centr_x", "centr_y")], ~centr_x, ~centr_y, radius = 3000, stroke = TRUE, fill = FALSE, color = cor_confirm, weight = 2, opacity = 0.5, group = "Reliability", options = pathOptions(pane = "back")) |>
       addRectangles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == -1, "utm10"], c("centr_x", "centr_y")], lng1 = ~centr_x - 0.03, lat1 = ~centr_y - 0.008, lng2 = ~centr_x + 0.03, lat2 = ~centr_y + 0.008, stroke = FALSE, fill = TRUE, fillColor = cor_confirm, fillOpacity = 0.5, group = "Reliability", options = pathOptions(pane = "back")) |>
 
-      addPolygons(color = cor_grelha, fillColor = NULL, fillOpacity = 0, weight = 1, label = ~utm10, labelOptions = labelOptions(noHide = FALSE, textOnly = TRUE, opacity = 0.8, textsize = "16px", style = list("color" = "darkgreen")), options = pathOptions(pane = "front")) |>
+      addPolygons(color = cor_grelha, fillColor = NULL, fillOpacity = 0, weight = 1, label = ~utm10, labelOptions = labelOptions(noHide = FALSE, textOnly = FALSE, opacity = 0.8, textsize = "16px", style = list("color" = "darkgreen")), options = pathOptions(pane = "front")) |>
 
       addLayersControl(overlayGroups = c("No date", "Old", "Recent", "Reliability", "Grilo et al. (2022)"), baseGroups = c("OpenStreetMap", "OpenTopoMap", "Stamen.Terrain"), options = layersControlOptions(collapsed = TRUE)) |>
 
