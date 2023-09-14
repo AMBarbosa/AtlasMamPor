@@ -8,7 +8,7 @@ shiny::runGitHub("AtlasMamPor", "AMBarbosa")
 
 You can also just [**use the app online**](https://ambiogeo.shinyapps.io/atlasmampor/) with a standard web browser. You'll be able to interactively create maps such as this one on wolf occurrence records in Portugal:
 
-[![](imagens/example.JPG)](https://ambiogeo.shinyapps.io/atlasmampor/)
+[<img src="imagens/example.png" width="600px">](https://ambiogeo.shinyapps.io/atlasmampor)
 
 These materials are available under a **Creative Commons Attribution-ShareAlike license (CC BY-SA 4.0)**. If you use species occurrence data contained in these files, remember to **cite**:
 
