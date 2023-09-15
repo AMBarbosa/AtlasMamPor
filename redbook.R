@@ -1,5 +1,4 @@
 library(terra)
-library(geodata)
 
 
 # UTM GRID MAP ####
@@ -23,6 +22,7 @@ icnf <- read.csv("dados_externos/0016929-230828120925497.csv", sep = "\t")  # do
 nrow(icnf)  # 511482
 head(icnf)
 unlink("dados_externos/0016929-230828120925497.csv")
+
 names(icnf)
 icnf <- icnf[ , c("species", "family", "decimalLongitude", "decimalLatitude", "coordinateUncertaintyInMeters", "year", "basisOfRecord", "institutionCode", "collectionCode")]
 head(icnf)
@@ -46,22 +46,39 @@ table(rb$coordinateUncertaintyInMeters)
 rb <- subset(rb, is.na(rb$coordinateUncertaintyInMeters) | rb$coordinateUncertaintyInMeters < (10000 * sqrt(2)) / 2)
 nrow(rb) # 471875
 
+
 # map records:
+
+terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
+points(rb[rb$species == "Chionomys nivalis" & rb$collectionCode == "red_book_of_mammals_portugal", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
+points(rb[rb$species == "Chionomys nivalis" & rb$collectionCode == "red_book_of_mammals_in_portugal_2", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = adjustcolor("red", 0.5))
+
+
 terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
 points(rb[rb$species == "Galemys pyrenaicus" & rb$collectionCode == "red_book_of_mammals_portugal", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
 points(rb[rb$species == "Galemys pyrenaicus" & rb$collectionCode == "red_book_of_mammals_in_portugal_2", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = adjustcolor("red", 0.5))
 
 terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
-points(rb[rb$species == "Chionomys nivalis" & rb$collectionCode == "red_book_of_mammals_portugal", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
-points(rb[rb$species == "Chionomys nivalis" & rb$collectionCode == "red_book_of_mammals_in_portugal_2", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = adjustcolor("red", 0.5))
+points(rb[rb$species == "Galemys pyrenaicus" & rb$year >= 2005, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
+points(rb[rb$species == "Galemys pyrenaicus" & rb$year < 2005, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.3, col = adjustcolor("red", 0.5))
+
 
 terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
 points(rb[rb$species == "Lynx pardinus" & rb$collectionCode == "red_book_of_mammals_portugal", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
 points(rb[rb$species == "Lynx pardinus" & rb$collectionCode == "red_book_of_mammals_in_portugal_2", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.3, col = adjustcolor("red", 0.5))
 
 terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
+points(rb[rb$species == "Lynx pardinus" & rb$year >= 2005, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
+points(rb[rb$species == "Lynx pardinus" & rb$year < 2005, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.3, col = adjustcolor("red", 0.5))
+
+
+terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
 points(rb[rb$species == "Canis lupus" & rb$collectionCode == "red_book_of_mammals_portugal", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
 points(rb[rb$species == "Canis lupus" & rb$collectionCode == "red_book_of_mammals_in_portugal_2", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.3, col = adjustcolor("red", 0.5))
+
+terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
+points(rb[rb$species == "Canis lupus" & rb$year >= 2005, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
+points(rb[rb$species == "Canis lupus" & rb$year < 2005, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.3, col = adjustcolor("red", 0.5))
 
 # both datasets look OK (ICNF GBIF upload errors reverted)
 # for the species above, it looks like 'red_book_of_mammals_portugal' might contain the recent records, 'red_book_of_mammals_in_portugal_2' older records
