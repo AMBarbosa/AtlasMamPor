@@ -5,7 +5,7 @@ account: ambiogeo
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1922980
-bundleId: 7689105
+bundleId: 7689963
 url: https://ambiogeo.shinyapps.io/atlasmampor/
 asMultiple: FALSE
 asStatic: FALSE
