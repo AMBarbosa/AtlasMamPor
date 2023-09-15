@@ -1,4 +1,5 @@
 library(terra)
+library(data.table)
 
 
 # UTM GRID MAP ####
@@ -17,68 +18,104 @@ especies_atlas <- sort(unique(atlas$especie))
 
 # import ICNF mammal presence data from GBIF:
 
-unzip("dados_externos/GBIF_Mammalia_pres_ICNF.zip", exdir = "dados_externos")
-icnf <- read.csv("dados_externos/0016929-230828120925497.csv", sep = "\t")  # downloaded 14 Sep 2023
-nrow(icnf)  # 511482
-head(icnf)
-unlink("dados_externos/0016929-230828120925497.csv")
+# unzip("dados_externos/GBIF_Mammalia_pres_ICNF_simple.zip", exdir = "dados_externos")
+# REFERENCE: GBIF.org (15 September 2023) GBIF Occurrence Download https://doi.org/10.15468/dl.fve5xx
+# download criteria:
+# Scientific name:
+# Mammalia
+# Occurrence status:
+# present
+# Publisher:
+# ICNF - Instituto da Conservação da Natureza e das Florestas
+# Dataset:
+# Red Book of Mammals in Portugal (part I) Red Book of Mammals in Portugal (part II) Red Book of Mammals in Portugal (part III)
 
-names(icnf)
-icnf <- icnf[ , c("species", "family", "decimalLongitude", "decimalLatitude", "coordinateUncertaintyInMeters", "year", "basisOfRecord", "institutionCode", "collectionCode")]
-head(icnf)
-unique(icnf$institutionCode)  # "ICNF"
+# rb <- read.csv("dados_externos/0017776-230828120925497.csv", sep = "\t")
+# nrow(rb)  # 474173 in 'simple' data download
+# ncol(rb)  # 50 in 'simple' data download
+#
+# unlink("dados_externos/0017776-230828120925497.csv", recursive = TRUE)
+
+# but this dataset misses the column 'identificationVerificationStatus', which allows excluding unverified records that ae not shown in the Red Book
 
 
-# subset to Red Book data:
+# import Darwin core instead:
 
-unique(icnf$collectionCode)  # several
-rb <- icnf[grep("red_book_of_mammals", icnf$collectionCode), ]
-unique(rb$collectionCode)
-# "red_book_of_mammals_portugal" "red_book_of_mammals_in_portugal_2"
-nrow(rb) # 474173
+unzip("dados_externos/GBIF_Mammalia_pres_ICNF_DarwinCore.zip", exdir = "dados_externos/GBIF_DarwinCore")
+# rb <- read.table("dados_externos/GBIF_DarwinCore/occurrence.txt", sep = "\t", header = TRUE)  # this (as well as read.csv) imported with errors
+rb <- data.table::fread("dados_externos/GBIF_DarwinCore/occurrence.txt")
+# Warning message:
+#   In data.table::fread("dados_externos/GBIF_DarwinCore/occurrence.txt") :
+#   Found and resolved improper quoting out-of-sample. First healed line 105028: <<4071738302				CC_BY_4_0	2022-02-05T00:00:00Z	ICNF - Instituto da Conservação da Natureza e das Florestas			occurrence	53f347a7-99ce-4528-a085-5c76eb1301a0			ICNF	red_book_of_mammals_portugal	Red Book of Mammals Portugal	FCiencias.ID	MACHINE_OBSERVATION			"{projectName":"LVMP","wingInMilimetres":"","weightInGrams":"","dnaSample":""}	00068aff-7441-426a-abd6-4964d0675c0e	P3_097881		Tiago Marques													PRESENT				Consórcio Consultoria Científica Chiroptera (2021). Inventariação acústica>>. If the fields are not quoted (e.g. field separator does not appear within any field), try quote="" to avoid this warning.
+# this seems to have fixed the errors; nrow now the same as 'simple' data donwload
+gc()
+
+rb <- as.data.frame(rb)
+
+nrow(rb)  # 474173
+ncol(rb)  # 212 (many more cols) in 'Darwin core' data download
+head(rb)
+unlink("dados_externos/GBIF_DarwinCore", recursive = TRUE)
+
+names(rb)
+unique(rb$institutionCode)  # "ICNF"
+unique(rb$collectionCode)  # "red_book_of_mammals_portugal"      "red_book_of_mammals_in_portugal_2"
+unique(rb$occurrenceStatus)  # "PRESENT"
+unique(rb$basisOfRecord)
+# [1] "LIVING_SPECIMEN"  "MATERIAL_SAMPLE"  "HUMAN_OBSERVATION"
+# [4] "MACHINE_OBSERVATION"  "PRESERVED_SPECIMEN"  "OCCURRENCE"
+unique(rb$typeStatus)  # NA
+unique(rb$identificationVerificationStatus)
+# [1] "verified by specialist"  "verified"  "unverifiable"
+# [4] "verification required"
+sum(is.na(rb$identificationVerificationStatus))  # 0
+
+
+rb_unverified <- rb
+nrow(rb_unverified)  # 474173
+
+rb <- subset(rb_unverified, rb_unverified$identificationVerificationStatus %in% c("verified by specialist", "verified"))
+nrow(rb)  # 193108
+rb <- subset(rb, rb$identificationVerificationStatus %in% c("verified by specialist"))
+nrow(rb)  # 112427
 
 
 # exclude data with excessive spatial error for 10x10 km2 cells:
 
 hist(rb$coordinateUncertaintyInMeters)
-range(rb$coordinateUncertaintyInMeters, na.rm = TRUE)  # 1e-02 1e+06
+range(rb$coordinateUncertaintyInMeters, na.rm = TRUE)  # 0.01 7025.00
 table(rb$coordinateUncertaintyInMeters)
 rb <- subset(rb, is.na(rb$coordinateUncertaintyInMeters) | rb$coordinateUncertaintyInMeters < (10000 * sqrt(2)) / 2)
-nrow(rb) # 471875
+nrow(rb) # 112427
 
 
 # map records:
 
-terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
-points(rb[rb$species == "Chionomys nivalis" & rb$collectionCode == "red_book_of_mammals_portugal", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
-points(rb[rb$species == "Chionomys nivalis" & rb$collectionCode == "red_book_of_mammals_in_portugal_2", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = adjustcolor("red", 0.5))
+unique(rb$year)
+sum(is.na(rb$year))  # 0
 
+species <- "Chionomys nivalis"
+species <- "Galemys pyrenaicus"
+species <- "Lynx pardinus"
+species <- "Canis lupus"
+species <- "Microtus cabrerae"
+species <- "Microtus rozianus"
+species <- "Microtus lusitanicus"
 
-terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
-points(rb[rb$species == "Galemys pyrenaicus" & rb$collectionCode == "red_book_of_mammals_portugal", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
-points(rb[rb$species == "Galemys pyrenaicus" & rb$collectionCode == "red_book_of_mammals_in_portugal_2", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = adjustcolor("red", 0.5))
+# by collectionCode:
+terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2), axes = FALSE)
+points(rb[rb$species == species & rb$collectionCode == "red_book_of_mammals_in_portugal_2", c("decimalLongitude", "decimalLatitude")], pch = 15, cex = 0.7, col = adjustcolor("darkgrey", 0.5))
+points(rb[rb$species == species & rb$collectionCode == "red_book_of_mammals_portugal", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.3, col = "darkred")
+title(species, font.main = 3, cex.main = 0.8)
+legend("bottom", legend = c("red_book_of_mammals_portugal", "red_book_of_mammals_in_portugal_2"), pch = c(20, 15), col = c("darkred", adjustcolor("darkgrey", 0.5)), cex = 0.7, title = "GBIF collectionCode:", bg = "white", box.lwd = 0, xpd = NA)
 
-terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
-points(rb[rb$species == "Galemys pyrenaicus" & rb$year >= 2005, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
-points(rb[rb$species == "Galemys pyrenaicus" & rb$year < 2005, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.3, col = adjustcolor("red", 0.5))
+# by year:
+terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2), axes = FALSE)
+points(rb[rb$species == species & rb$year >= 1990 & rb$year <= 2004, c("decimalLongitude", "decimalLatitude")], pch = 15, cex = 0.7, col = adjustcolor("darkgrey", 0.5))
+points(rb[rb$species == species & rb$year >= 2005 & rb$year <= 2021, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.3, col = "darkred")
+title(species, font.main = 3, cex.main = 0.8)
+legend("bottom", legend = c("2005-2021", "1990-2004"), pch = c(20, 15), col = c("darkred", adjustcolor("darkgrey", 0.5)), cex = 0.7, title = "GBIF year:", bg = "white", box.lwd = 0, xpd = NA)
 
-
-terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
-points(rb[rb$species == "Lynx pardinus" & rb$collectionCode == "red_book_of_mammals_portugal", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
-points(rb[rb$species == "Lynx pardinus" & rb$collectionCode == "red_book_of_mammals_in_portugal_2", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.3, col = adjustcolor("red", 0.5))
-
-terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
-points(rb[rb$species == "Lynx pardinus" & rb$year >= 2005, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
-points(rb[rb$species == "Lynx pardinus" & rb$year < 2005, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.3, col = adjustcolor("red", 0.5))
-
-
-terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
-points(rb[rb$species == "Canis lupus" & rb$collectionCode == "red_book_of_mammals_portugal", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
-points(rb[rb$species == "Canis lupus" & rb$collectionCode == "red_book_of_mammals_in_portugal_2", c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.3, col = adjustcolor("red", 0.5))
-
-terra::plot(u10, lwd = 0.1, ext = c(-10, -6, 37, 42.2))
-points(rb[rb$species == "Canis lupus" & rb$year >= 2005, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.5, col = "blue")
-points(rb[rb$species == "Canis lupus" & rb$year < 2005, c("decimalLongitude", "decimalLatitude")], pch = 20, cex = 0.3, col = adjustcolor("red", 0.5))
 
 # both datasets look OK (ICNF GBIF upload errors reverted)
 # for the species above, it looks like 'red_book_of_mammals_portugal' might contain the recent records, 'red_book_of_mammals_in_portugal_2' older records
