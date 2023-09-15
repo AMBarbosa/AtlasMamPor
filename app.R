@@ -70,13 +70,11 @@ server <- function(input, output, session) {
     )})
 
   seleccionar_dados <- reactive({
-    dados <- atlas[atlas$especie == input$especie, ]
-    dados <- rbind(dados, datapaper[datapaper$especie == input$especie, ])  # data paper add
-    dados <- rbind(dados, redbook[redbook$especie == input$especie, ])  # data paper add
+    dados <- dados[dados$especie == input$especie, ]  # 'dados' (from global.R) includes atlas, datapaper, redbook
     dados
   })
 
-  limites <- ext(ptgal)
+  limites <- terra::ext(ptgal)
 
   cor_grelha <- "darkgrey"
   cor_semdata <- "grey"
@@ -121,19 +119,14 @@ server <- function(input, output, session) {
       addPolygons(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$recente) & dados$recente == 0 & dados$source == "atlas", "utm10"], ], fillColor = cor_antigo, fillOpacity = 0.6, stroke = FALSE, group = "Old", options = pathOptions(pane = "back")) |>
       addPolygons(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$recente) & dados$recente == 1 & dados$source == "atlas", "utm10"], ], fillColor = cor_recente, fillOpacity = 0.6, stroke = FALSE, group = "Recent", options = pathOptions(pane = "back")) |>
 
-
-      # add external (data paper + red book):
-      # addPolygons(data = ptgal[ptgal$utm10 %in% dados[dados$source == "datapaper", "utm10"], ], fillColor = cor_datapaper, fillOpacity = 0.6, stroke = FALSE, group = "Grilo et al. (2022)", options = pathOptions(pane = "back")) |>
-      # addPolygons(data = ptgal[ptgal$utm10 %in% dados[dados$source == "redbook", "utm10"], ], fillColor = cor_redbook, fillOpacity = 0.6, stroke = FALSE, group = "Mathias et al. (2023)", options = pathOptions(pane = "back")) |>
-      addRectangles(data = ptgal[ptgal$utm10 %in% dados[dados$source == "datapaper", "utm10"], ], ~centr_x, ~centr_y, lng1 = ~centr_x - 0.03, lat1 = ~centr_y - 0.025, lng2 = ~centr_x + 0.03, lat2 = ~centr_y + 0.025, stroke = FALSE, fill = TRUE, fillColor = cor_datapaper, weight = 2, fillOpacity = 0.5, group = "Grilo et al. (2022)", options = pathOptions(pane = "back")) |>
-      addRectangles(data = ptgal[ptgal$utm10 %in% dados[dados$source == "redbook", "utm10"], ], ~centr_x, ~centr_y, lng1 = ~centr_x - 0.03, lat1 = ~centr_y - 0.025, lng2 = ~centr_x + 0.03, lat2 = ~centr_y + 0.025, stroke = FALSE, fill = TRUE, fillColor = cor_redbook, weight = 2, fillOpacity = 0.7, group = "Mathias et al. (2023)", options = pathOptions(pane = "back")) |>
-
-      # add confirmed status:
       addCircles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == 1, "utm10"], c("centr_x", "centr_y")], ~centr_x, ~centr_y, radius = 3000, stroke = FALSE, fill = TRUE, fillColor = cor_confirm, fillOpacity = 0.5, group = "Reliability", options = pathOptions(pane = "back")) |>
       addCircles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == 0, "utm10"], c("centr_x", "centr_y")], ~centr_x, ~centr_y, radius = 3000, stroke = TRUE, fill = FALSE, color = cor_confirm, weight = 2, opacity = 0.5, group = "Reliability", options = pathOptions(pane = "back")) |>
       addRectangles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == -1, "utm10"], c("centr_x", "centr_y")], lng1 = ~centr_x - 0.03, lat1 = ~centr_y - 0.008, lng2 = ~centr_x + 0.03, lat2 = ~centr_y + 0.008, stroke = FALSE, fill = TRUE, fillColor = cor_confirm, fillOpacity = 0.5, group = "Reliability", options = pathOptions(pane = "back")) |>
 
-      # add UTM grid:
+      # add external (data paper + red book):
+      addRectangles(data = ptgal[ptgal$utm10 %in% dados[dados$source == "datapaper", "utm10"], ], ~centr_x, ~centr_y, lng1 = ~centr_x - 0.03, lat1 = ~centr_y - 0.025, lng2 = ~centr_x + 0.03, lat2 = ~centr_y + 0.025, stroke = FALSE, fill = TRUE, fillColor = cor_datapaper, weight = 2, fillOpacity = 0.5, group = "Grilo et al. (2022)", options = pathOptions(pane = "back")) |>
+      addRectangles(data = ptgal[ptgal$utm10 %in% dados[dados$source == "redbook", "utm10"], ], ~centr_x, ~centr_y, lng1 = ~centr_x - 0.03, lat1 = ~centr_y - 0.025, lng2 = ~centr_x + 0.03, lat2 = ~centr_y + 0.025, stroke = FALSE, fill = TRUE, fillColor = cor_redbook, weight = 2, fillOpacity = 0.7, group = "Mathias et al. (2023)", options = pathOptions(pane = "back")) |>
+
       addPolygons(color = cor_grelha, fillColor = NULL, fillOpacity = 0, weight = 1, label = ~utm10, labelOptions = labelOptions(noHide = FALSE, textOnly = FALSE, opacity = 0.8, textsize = "16px", style = list("color" = "darkgreen")), options = pathOptions(pane = "front")) |>
 
       addLayersControl(overlayGroups = c("No date", "Old", "Recent", "Reliability", "Grilo et al. (2022)", "Mathias et al. (2023)"), baseGroups = c("OpenStreetMap", "OpenTopoMap", "Stamen.Terrain"), options = layersControlOptions(collapsed = TRUE)) |>

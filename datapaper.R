@@ -15,12 +15,15 @@ especies_atlas <- sort(unique(atlas$especie))
 
 # DATAPAPER OCCURRENCE DATA ####
 
-download.file("https://esajournals.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fecy.3654&file=ecy3654-sup-0001-Data_S1.zip", destfile = "dados/datapaper.zip")  # command didn't work
+# download.file("https://esajournals.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2Fecy.3654&file=ecy3654-sup-0001-Data_S1.zip", destfile = "dados/datapaper.zip")  # command didn't work
 
-# manually downloaded file from https://esajournals.onlinelibrary.wiley.com/doi/10.1002/ecy.3654 and unzipped it
+# manually downloaded file from https://esajournals.onlinelibrary.wiley.com/doi/10.1002/ecy.3654
 
-dp <- read.csv("dados/DataPaper/MAMMALS_PORTUGAL_DATA_SET 2021-11.csv")
+unzip("dados_externos/Grilo et al 2022 datapaper supp.zip", exdir = "dados_externos")
+# dp <- read.csv("dados/DataPaper/MAMMALS_PORTUGAL_DATA_SET 2021-11.csv")
+dp <- read.csv("dados_externos/ecy3654-sup-0001-DataS1/MAMMALS_PORTUGAL_DATA_SET 2021-11.csv")
 head(dp)
+unlink("dados_externos/ecy3654-sup-0001-DataS1", , recursive = TRUE)
 
 
 # MATCH SPECIES NAMES ####
@@ -69,19 +72,6 @@ names(dp_utm10)[2] <- "especie"  # to match atlas
 # add M. rozianus (reassigned from M. agrestis)?
 
 
-head(atlas)
-dp_utm10 <- data.frame(dp_utm10[ , "utm10", drop = FALSE],
-                       centr_x = NA_real_,
-                       centr_y = NA_real_,
-                       dp_utm10[ , "especie", drop = FALSE],
-                       ordem = NA_character_,
-                       recente = NA_integer_,
-                       confirmado = NA_integer_)
-head(dp_utm10)
+# EXPORT TABLE
 
 write.csv(dp_utm10, "dados/datapaper_utm10.csv", row.names = FALSE)
-
-
-# DELETE ORIGINAL DATAPAPER FILES ####
-
-unlink("dados/DataPaper", recursive = TRUE)

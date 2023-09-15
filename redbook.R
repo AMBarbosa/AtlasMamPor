@@ -18,9 +18,11 @@ especies_atlas <- sort(unique(atlas$especie))
 
 # import ICNF mammal presence data from GBIF:
 
-icnf <- read.csv("dados_externos/GBIF_Mammalia_pres_ICNF.csv", sep = "\t")  # downloaded 14 Sep 2023
+unzip("dados_externos/GBIF_Mammalia_pres_ICNF.zip", exdir = "dados_externos")
+icnf <- read.csv("dados_externos/0016929-230828120925497.csv", sep = "\t")  # downloaded 14 Sep 2023
 nrow(icnf)  # 511482
 head(icnf)
+unlink("dados_externos/0016929-230828120925497.csv")
 names(icnf)
 icnf <- icnf[ , c("species", "family", "decimalLongitude", "decimalLatitude", "coordinateUncertaintyInMeters", "year", "basisOfRecord", "institutionCode", "collectionCode")]
 head(icnf)
@@ -139,17 +141,6 @@ head(rb_u10)
 names(rb_u10)[2] <- "especie"  # to match atlas
 
 
-# BUILD FINAL TABLE
+# EXPORT TABLE
 
-head(atlas)
-final <- data.frame(rb_u10[ , "utm10", drop = FALSE],
-                    centr_x = NA_real_,
-                    centr_y = NA_real_,
-                    rb_u10[ , "especie", drop = FALSE],
-                    ordem = NA_character_,
-                    recente = NA_integer_,
-                    confirmado = NA_integer_)
-head(final)
-tail(final)
-
-write.csv(final, "dados/redbook_utm10.csv", row.names = FALSE)
+write.csv(rb_u10, "dados/redbook_utm10.csv", row.names = FALSE)
