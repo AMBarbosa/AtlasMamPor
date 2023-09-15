@@ -32,12 +32,13 @@ ui <- fluidPage(
       br(),
 
       p(tags$strong("SOURCES:")),
-      p("Bencatel J., Sabino-Marques H., Alvares F., Moura A.E. & Barbosa A.M. (2019)", a(href = "https://atlasmamiferosportugal.wordpress.com/", "Atlas de Mamiferos de Portugal (2nd edition)", .noWS = "after"), ". Universidade de Evora, Portugal"),
-      p("Grilo et al. (2022)", a(href = "https://doi.org/10.1002/ecy.3654", "Mammals in Portugal: A data set of terrestrial, volant, and marine mammal occurrences in Portugal", .noWS = "after"), ".", tags$i("Ecology,"), "103:e3654"),
+      p("Bencatel J., Sabino-Marques H., Álvares F., Moura A.E. & Barbosa A.M. (2019)", a(href = "https://atlasmamiferosportugal.wordpress.com/", "Atlas de Mamiferos de Portugal (2nd edition)", .noWS = "after"), ". Universidade de Evora, Portugal."),
+      p("Grilo C. et al. [numerous co-authors] (2022)", a(href = "https://doi.org/10.1002/ecy.3654", "Mammals in Portugal: A data set of terrestrial, volant, and marine mammal occurrences in Portugal", .noWS = "after"), ".", tags$i("Ecology,"), "103:e3654."),
+      p("Mathias M.L. (coord.), Fonseca C., Rodrigues L., Grilo C., Lopes-Fernandes M., Palmeirim J.M., Santos-Reis M., Alves P.C., Cabral J.A., Ferreira M., Mira A., Eira C., Negrões N., Paupério J., Pita R., Rainho A., Rosalino L.M., Tapisso J.T. & Vingada J. (eds.) (2023)", a(href = "https://atlasmamiferosportugal.wordpress.com/", "Livro Vermelho dos Mamíferos de Portugal Continental", .noWS = "after"), ". FCiências.ID, ICNF, Lisboa. Data available on GBIF."),
 
       br(),
 
-      p("Note Grilo et al. (2022) provide point occurrences at a higher resolution; here they were converted to the Atlas grid, but see the original paper for more detail."),
+      p("Note that presences from Grilo et al. (2022) and Mathias et al. (2023) are unselected by default, to avoid saturating the map; mouse over the 'layers' menu on the top right to add them. Note also that these sources provide point occurrences at a higher resolution; here they were converted to the Atlas grid, but see the original publications for more detail."),
     ),  # end sidebar panel
 
     mainPanel(
@@ -47,9 +48,9 @@ ui <- fluidPage(
 
       p("The Atlas of Mammals in Portugal gathered mammal occurrence records on UTM 10x10-km2 grid cells, made available (in publications, theses, reports, online photos or direct contributions) over approximately three decades up to 2018. Mind that survey effort was uneven: as in most atlases, the data reflect spatial and taxonomic bias, as some species and areas were more intensively surveyed than others. The atlas is a picture of the knowledge made available up to the time of publication."),
 
-      p("Grid cell presences extracted from major datasets published after the Atlas were added to the interactive maps, and are now also cited under 'SOURCES' on the left panel"),
+      p("Grid cell presences extracted from major datasets published after the Atlas were added to the interactive maps (you can  select them after unfolding the top-right menu), and are now also cited under 'SOURCES' on the left panel"),
 
-      p("Note that the 'confirmed', 'credible' and 'interview' labels refer only to the Atlas records, in dark red. Note also that marine mammals are not in the interactive maps due to data privacy, but they have plenty of records in the Atlas. See the PDF book (freely available", a(href = "https://atlasmamiferosportugal.wordpress.com", "here", .noWS = "after"), ") for more info on the data!")
+      p("Note that the 'confirmed', 'credible' and 'interview' labels refer only to the Atlas records in dark red. Note also that marine mammals are not in the interactive maps due to data privacy, but they have plenty of records in the Atlas. See the PDF book (freely available", a(href = "https://atlasmamiferosportugal.wordpress.com", "here", .noWS = "after"), ") for more info on the data!")
     )  # end mainPanel
   )  # end sidebarLayout
 )  # end fluidPage
@@ -71,6 +72,7 @@ server <- function(input, output, session) {
   seleccionar_dados <- reactive({
     dados <- atlas[atlas$especie == input$especie, ]
     dados <- rbind(dados, datapaper[datapaper$especie == input$especie, ])  # data paper add
+    dados <- rbind(dados, redbook[redbook$especie == input$especie, ])  # data paper add
     dados
   })
 
@@ -82,6 +84,7 @@ server <- function(input, output, session) {
   cor_recente <- "darkred"
   cor_confirm <- "#FF6347"
   cor_datapaper <- "darkblue"
+  cor_redbook <- "purple"
 
   # https://stackoverflow.com/questions/37862467/leaflet-legend-for-custom-markers-in-r
   # images need to be online or stored in a folder named 'www'
@@ -91,7 +94,8 @@ server <- function(input, output, session) {
   <img src='legenda_confirmado.png'>  confirmed<br/>
   <img src='legenda_plausivel.png'>  credible<br/>
   <img src='legenda_inquerito.png'>  interview<br/>
-  <img src='legenda_datapaper.png'>  Grilo et al. (2022)<br/>"
+  <img src='legenda_datapaper.png'>  Grilo et al. (2022)<br/>
+  <img src='legenda_redbook.png'>  Mathias et al. (2023)<br/>"
 
   output$mapa <- renderLeaflet({
     leaflet(data = ptgal) |>
@@ -116,7 +120,10 @@ server <- function(input, output, session) {
       addPolygons(data = ptgal[ptgal$utm10 %in% dados[which(is.na(dados$recente) & dados$source == "atlas"), "utm10"], ], fillColor = cor_semdata, fillOpacity = 0.5, stroke = FALSE, group = "No date", options = pathOptions(pane = "back")) |>
       addPolygons(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$recente) & dados$recente == 0 & dados$source == "atlas", "utm10"], ], fillColor = cor_antigo, fillOpacity = 0.6, stroke = FALSE, group = "Old", options = pathOptions(pane = "back")) |>
       addPolygons(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$recente) & dados$recente == 1 & dados$source == "atlas", "utm10"], ], fillColor = cor_recente, fillOpacity = 0.6, stroke = FALSE, group = "Recent", options = pathOptions(pane = "back")) |>
+
       addPolygons(data = ptgal[ptgal$utm10 %in% dados[dados$source == "datapaper", "utm10"], ], fillColor = cor_datapaper, fillOpacity = 0.6, stroke = FALSE, group = "Grilo et al. (2022)", options = pathOptions(pane = "back")) |>
+      addPolygons(data = ptgal[ptgal$utm10 %in% dados[dados$source == "redbook", "utm10"], ], fillColor = cor_redbook, fillOpacity = 0.6, stroke = FALSE, group = "Mathias et al. (2023)", options = pathOptions(pane = "back")) |>
+      hideGroup(c("Grilo et al. (2022)", "Mathias et al. (2023)")) |>
 
       addCircles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == 1, "utm10"], c("centr_x", "centr_y")], ~centr_x, ~centr_y, radius = 3000, stroke = FALSE, fill = TRUE, fillColor = cor_confirm, fillOpacity = 0.5, group = "Reliability", options = pathOptions(pane = "back")) |>
       addCircles(data = ptgal[ptgal$utm10 %in% dados[!is.na(dados$confirmado) & dados$confirmado == 0, "utm10"], c("centr_x", "centr_y")], ~centr_x, ~centr_y, radius = 3000, stroke = TRUE, fill = FALSE, color = cor_confirm, weight = 2, opacity = 0.5, group = "Reliability", options = pathOptions(pane = "back")) |>
@@ -124,7 +131,7 @@ server <- function(input, output, session) {
 
       addPolygons(color = cor_grelha, fillColor = NULL, fillOpacity = 0, weight = 1, label = ~utm10, labelOptions = labelOptions(noHide = FALSE, textOnly = FALSE, opacity = 0.8, textsize = "16px", style = list("color" = "darkgreen")), options = pathOptions(pane = "front")) |>
 
-      addLayersControl(overlayGroups = c("No date", "Old", "Recent", "Reliability", "Grilo et al. (2022)"), baseGroups = c("OpenStreetMap", "OpenTopoMap", "Stamen.Terrain"), options = layersControlOptions(collapsed = TRUE)) |>
+      addLayersControl(overlayGroups = c("No date", "Old", "Recent", "Reliability", "Grilo et al. (2022)", "Mathias et al. (2023)"), baseGroups = c("OpenStreetMap", "OpenTopoMap", "Stamen.Terrain"), options = layersControlOptions(collapsed = TRUE)) |>
 
       leaflet.extras::addSearchOSM()
   })  # end observe

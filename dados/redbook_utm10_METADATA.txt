@@ -1,0 +1,6 @@
+Extracted to UTM 10x10 km2 cells or Portuguese islands (using the 'terra' R package) from the mammal presences in GBIF (downloaded 2023/09/14) where institutionCode was ICNF, collectionCode was red_book_of_mammals* (Livro Vermelho dos Mamíferos de Portugal Continental, https://repositorio.ul.pt/handle/10451/58108), and coordinateUncertaintyInMeters was up to the distance from the centre to the corner of a 10x10 km2 square.
+
+
+Bibliographic reference:
+
+Mathias ML (coord.), Fonseca C, Rodrigues L, Grilo C, Lopes-Fernandes M, Palmeirim JM, Santos-Reis M, Alves PC, Cabral JA, Ferreira M, Mira A, Eira C, Negrões N, Paupério J, Pita R, Rainho A, Rosalino LM, Tapisso JT & Vingada J (eds.)(2023). Livro Vermelho dos Mamíferos de Portugal Continental. FCiências.ID, ICNF, Lisboa.
