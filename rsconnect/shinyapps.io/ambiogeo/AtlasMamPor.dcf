@@ -5,7 +5,8 @@ account: ambiogeo
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1922980
-bundleId: 7515884
+bundleId: 7688420
 url: https://ambiogeo.shinyapps.io/atlasmampor/
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: dados_externos/GBIF_Mammalia_pres_ICNF.csv|datapaper.R|redbook.R
