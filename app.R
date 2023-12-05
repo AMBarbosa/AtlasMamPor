@@ -1,5 +1,5 @@
 # by A. Marcia Barbosa (https://modtools.wordpress.com/barbosa/)
-# used for https://atlas-mamiferos.uevora.pt/index.php/mapas/
+# used for https://atlasmamiferosportugal.wordpress.com/
 # last updated 31 Jul 2023
 
 # RStudio: Session -> Set Working Directory -> To Source File Location
